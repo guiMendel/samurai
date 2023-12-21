@@ -53,5 +53,7 @@
         "Temp/":true,
         "*.csproj": true
     },
-    "workbench.colorTheme": "eppz!"
+    "workbench.colorTheme": "eppz!",
+    "editor.tabSize": 2,
+    "editor.detectIndentation": false
 }
