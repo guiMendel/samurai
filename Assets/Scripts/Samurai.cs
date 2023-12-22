@@ -11,9 +11,6 @@ public class Samurai : MonoBehaviour
   Orchestrator orchestrator;
   Samurai opponent;
 
-  // === PARAMS
-  public float dashSpeed = 8f;
-
 
   private void Awake()
   {
@@ -35,16 +32,17 @@ public class Samurai : MonoBehaviour
   }
 
 
-  // === DASH
-  [Header("Dash")]
+  // ====================================
+  #region GUARD
+  [Header("Guard")]
 
-  [Tooltip("Seconds it takes the samurai to enter dash stance")]
-  public float dashStanceWindup = 0.3f;
+  [Tooltip("Seconds it takes the samurai to enter guard stance")]
+  public float guardStanceWindup = 0.3f;
 
-  [Tooltip("Seconds it takes the samurai to enter dash stance")]
-  public float dashStanceUnwind = 0.2f;
+  [Tooltip("Seconds it takes the samurai to enter guard stance")]
+  public float guardStanceUnwind = 0.2f;
 
-  enum Stance { Idle, TransitionIn, TransitionOut, Dash }
+  enum Stance { Idle, TransitionIn, TransitionOut, Guard }
 
   // Current stance of the samurai
   Stance currentStance = Stance.Idle;
@@ -60,29 +58,64 @@ public class Samurai : MonoBehaviour
     if (transitionDuration >= 0) transitionDuration += Time.deltaTime;
   }
 
-  IEnumerator SetDashStance(bool enterDashStance, float modifier = 0f)
+  IEnumerator SetGuardStance(bool enterGuardStance, float modifier = 0f)
   {
-    print("modifier " + modifier);
-
     transitionDuration = 0f;
 
-    currentStance = enterDashStance ? Stance.TransitionIn : Stance.TransitionOut;
+    currentStance = enterGuardStance ? Stance.TransitionIn : Stance.TransitionOut;
 
-    GetComponent<SpriteRenderer>().color = enterDashStance ? Color.blue : Color.gray;
+    GetComponent<SpriteRenderer>().color = enterGuardStance ? Color.blue : Color.gray;
 
     if (modifier > 0f)
       yield return new WaitForSeconds(
-        (enterDashStance ? dashStanceWindup : dashStanceUnwind) * modifier);
+        (enterGuardStance ? guardStanceWindup : guardStanceUnwind) * modifier);
 
-    GetComponent<SpriteRenderer>().color = enterDashStance ? Color.red : Color.white;
+    GetComponent<SpriteRenderer>().color = enterGuardStance ? Color.red : Color.white;
 
-    currentStance = enterDashStance ? Stance.Dash : Stance.Idle;
+    currentStance = enterGuardStance ? Stance.Guard : Stance.Idle;
 
     transitionDuration = -1f;
   }
 
+  public void InputGuard(InputAction.CallbackContext value)
+  {
+    float modifier = 1f;
 
-  // === MOVEMENT
+    void Interrupt(float currentStanceDuration)
+    {
+      if (stanceTransitionCoroutine != null)
+      {
+        // If in the middle of an unwind, discount time
+        if (transitionDuration > 0f)
+          modifier = Mathf.Max(transitionDuration / currentStanceDuration, 0.2f);
+
+        StopCoroutine(stanceTransitionCoroutine);
+      }
+    }
+
+    // Enter guard on press
+    if (value.performed && currentStance != Stance.TransitionIn)
+    {
+      Interrupt(guardStanceUnwind);
+
+      stanceTransitionCoroutine = StartCoroutine(SetGuardStance(true, modifier));
+      return;
+    }
+
+    // Leave guard stance on release
+    if (value.canceled && currentStance != Stance.TransitionOut)
+    {
+      Interrupt(guardStanceWindup);
+
+      stanceTransitionCoroutine = StartCoroutine(SetGuardStance(false, modifier));
+    }
+  }
+
+  #endregion
+
+
+  // ====================================
+  #region MOVEMENT
   [Header("Movement")]
 
   [Tooltip("Speed of walking")]
@@ -110,15 +143,11 @@ public class Samurai : MonoBehaviour
     transform.position = new Vector2(opponent.transform.position.x - newDistance, transform.position.y);
   }
 
-
   void Move(float direction) => moveDirection = Mathf.Sign(direction);
 
   private void Halt() => moveDirection = 0;
 
-
-  // === INPUT CALLBACKS
-
-  public void Move(InputAction.CallbackContext value)
+  public void InputMove(InputAction.CallbackContext value)
   {
     // Move on x axis
     if (value.phase == InputActionPhase.Performed) Move(value.ReadValue<Vector2>().x);
@@ -126,38 +155,5 @@ public class Samurai : MonoBehaviour
     // Stop movement when released
     else if (value.phase != InputActionPhase.Started) Halt();
   }
-
-  public void Sword(InputAction.CallbackContext value)
-  {
-    float modifier = 1f;
-
-    void Interrupt(float currentStanceDuration)
-    {
-      if (stanceTransitionCoroutine != null)
-      {
-        // If in the middle of an unwind, discount time
-        if (transitionDuration > 0f)
-          modifier = Mathf.Max(transitionDuration / currentStanceDuration, 0.2f);
-
-        StopCoroutine(stanceTransitionCoroutine);
-      }
-    }
-
-    // Enter dash on press
-    if (value.performed && currentStance != Stance.TransitionIn)
-    {
-      Interrupt(dashStanceUnwind);
-
-      stanceTransitionCoroutine = StartCoroutine(SetDashStance(true, modifier));
-      return;
-    }
-
-    // Leave dash stance on release
-    if (value.canceled && currentStance != Stance.TransitionOut)
-    {
-      Interrupt(dashStanceWindup);
-
-      stanceTransitionCoroutine = StartCoroutine(SetDashStance(false, modifier));
-    }
-  }
+  #endregion
 }

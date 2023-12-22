@@ -98,9 +98,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1e72e63fe999b840b2080dc7cab131d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dashSpeed: 8
-  dashStanceWindup: 0.3
-  dashStanceUnwind: 0.2
+  guardStanceWindup: 0.3
+  guardStanceUnwind: 0.2
   walkSpeed: 3
 --- !u!114 &2710849161542954368
 MonoBehaviour:
@@ -131,7 +130,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: -2215552699761828712}
         m_TargetAssemblyTypeName: Samurai, Assembly-CSharp
-        m_MethodName: Move
+        m_MethodName: InputMove
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -147,7 +146,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: -2215552699761828712}
         m_TargetAssemblyTypeName: Samurai, Assembly-CSharp
-        m_MethodName: Sword
+        m_MethodName: InputGuard
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
