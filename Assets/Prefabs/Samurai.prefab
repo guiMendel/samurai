@@ -98,10 +98,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1e72e63fe999b840b2080dc7cab131d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dashSpeed: 10
+  dashSpeed: 20
   dashEndDistance: 4
-  guardStanceWindup: 0.3
-  guardStanceUnwind: 0.2
+  guardStanceWindup: 0.2
+  guardStanceUnwind: 0.15
   walkSpeed: 3
   retreatModifier: 0.677
   walkDirection: 0

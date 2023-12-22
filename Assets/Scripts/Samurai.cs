@@ -71,8 +71,6 @@ public class Samurai : MonoBehaviour
 
   void ApplyDash()
   {
-    print((gameObject.name, duelState));
-
     if (!IsDashing) return;
 
     transform.position = new Vector2(
