@@ -5,9 +5,26 @@ using UnityEngine.InputSystem;
 
 public class Samurai : MonoBehaviour
 {
+  // === REFS
+
+  Orchestrator orchestrator;
+  Samurai opponent;
+
   // === PARAMS
   public float dashSpeed = 8f;
 
+
+  private void Awake()
+  {
+    orchestrator = FindObjectOfType<Orchestrator>();
+    var samurais = FindObjectsOfType<Samurai>();
+
+    opponent = Object.ReferenceEquals(gameObject, samurais[0].gameObject)
+      ? samurais[1]
+      : samurais[0];
+
+    opponentDirection = Mathf.Sign(OpponentDistance);
+  }
 
   private void Update()
   {
@@ -21,13 +38,30 @@ public class Samurai : MonoBehaviour
   [Tooltip("Speed of walking")]
   public float walkSpeed = 3f;
 
+  // Direction the samurai is currently moving towards
   float moveDirection = 0f;
+
+  // Direction towards the opponent
+  float opponentDirection;
+
+  // Distance to the opponent
+  float OpponentDistance => opponent.transform.position.x - transform.position.x;
 
   void ApplyMovement()
   {
-    float newX = transform.position.x + moveDirection * walkSpeed * Time.deltaTime;
+    if (moveDirection == 0) return;
 
-    transform.position = new Vector2(newX, transform.position.y);
+    float newDistance = OpponentDistance - moveDirection * walkSpeed * Time.deltaTime;
+
+    print("before " + newDistance);
+
+    // Respect distance boundaries
+    newDistance = Helper.UnsignedClamp(
+      newDistance, orchestrator.minSamuraisDistance, orchestrator.maxSamuraisDistance);
+
+    print("after " + newDistance);
+
+    transform.position = new Vector2(opponent.transform.position.x - newDistance, transform.position.y);
   }
 
 
