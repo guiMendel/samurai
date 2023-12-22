@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 5055265359553974689}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.56, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -98,10 +98,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1e72e63fe999b840b2080dc7cab131d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  dashSpeed: 10
+  dashEndDistance: 4
   guardStanceWindup: 0.3
   guardStanceUnwind: 0.2
   walkSpeed: 3
   retreatModifier: 0.677
+  walkDirection: 0
 --- !u!114 &2710849161542954368
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -131,7 +134,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: -2215552699761828712}
         m_TargetAssemblyTypeName: Samurai, Assembly-CSharp
-        m_MethodName: InputMove
+        m_MethodName: InputWalk
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

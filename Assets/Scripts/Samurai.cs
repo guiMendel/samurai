@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditor.EditorTools;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -26,10 +27,68 @@ public class Samurai : MonoBehaviour
 
   private void Update()
   {
-    ApplyMovement();
+    ApplyWalk();
+
+    ApplyDash();
 
     UpdateTransitionTimer();
   }
+
+
+  // ====================================
+  #region DUEL
+  [Header("Duel")]
+
+  [Tooltip("Speed of the dash")]
+  public float dashSpeed = 10f;
+
+  [Tooltip("Distance beyond opponent which to stop dashing")]
+  public float dashEndDistance = 4f;
+
+  enum DuelState { None, Standing, Dashing, Over }
+
+  // Which state the duel is in
+  DuelState duelState = DuelState.None;
+
+  // Whether this samurai is engaged in a duel
+  bool IsDueling => duelState != DuelState.None;
+
+  // Whether the samurai is dashing towards the opponent
+  bool IsDashing => duelState == DuelState.Dashing;
+
+  public void StartDuel()
+  {
+    if (IsDueling) return;
+
+    if (walkDirection == opponentDirection) Dash();
+    else duelState = DuelState.Standing;
+  }
+
+  void Dash()
+  {
+    duelState = DuelState.Dashing;
+  }
+
+  void ApplyDash()
+  {
+    print((gameObject.name, duelState));
+
+    if (!IsDashing) return;
+
+    transform.position = new Vector2(
+      transform.position.x + opponentDirection * dashSpeed * Time.deltaTime,
+      transform.position.y
+    );
+
+    // Stop dash after the dash limit
+    if (
+      (opponentDirection > 0 && OpponentDistance < -dashEndDistance) ||
+      (opponentDirection < 0 && OpponentDistance > dashEndDistance)
+    )
+      duelState = DuelState.Over;
+  }
+
+  #endregion
 
 
   // ====================================
@@ -46,6 +105,9 @@ public class Samurai : MonoBehaviour
 
   // Current stance of the samurai
   Stance currentStance = Stance.Idle;
+
+  // Whether samurai is ready to start the duel
+  public bool ReadyToDuel => currentStance == Stance.Guard;
 
   // Current coroutine for stance transition
   Coroutine stanceTransitionCoroutine;
@@ -73,6 +135,7 @@ public class Samurai : MonoBehaviour
     GetComponent<SpriteRenderer>().color = enterGuardStance ? Color.red : Color.white;
 
     currentStance = enterGuardStance ? Stance.Guard : Stance.Idle;
+    orchestrator.MaybeStartDuel();
 
     transitionDuration = -1f;
   }
@@ -115,8 +178,8 @@ public class Samurai : MonoBehaviour
 
 
   // ====================================
-  #region MOVEMENT
-  [Header("Movement")]
+  #region WALK
+  [Header("Walk")]
 
   [Tooltip("Speed of walking")]
   public float walkSpeed = 3f;
@@ -125,7 +188,7 @@ public class Samurai : MonoBehaviour
   [Range(0.1f, 1f)] public float retreatModifier = 0.8f;
 
   // Direction the samurai is currently moving towards
-  float moveDirection = 0f;
+  [DoNotSerialize] public float walkDirection = 0f;
 
   // Direction towards the opponent
   float opponentDirection;
@@ -133,11 +196,11 @@ public class Samurai : MonoBehaviour
   // Distance to the opponent
   float OpponentDistance => opponent.transform.position.x - transform.position.x;
 
-  void ApplyMovement()
+  void ApplyWalk()
   {
-    if (moveDirection == 0) return;
+    if (IsDueling || walkDirection == 0 || currentStance != Stance.Idle) return;
 
-    float newDistance = OpponentDistance - moveDirection * walkSpeed * Time.deltaTime;
+    float newDistance = OpponentDistance - walkDirection * walkSpeed * Time.deltaTime;
 
     // Respect distance boundaries
     newDistance = Helper.UnsignedClamp(
@@ -146,28 +209,36 @@ public class Samurai : MonoBehaviour
     transform.position = new Vector2(opponent.transform.position.x - newDistance, transform.position.y);
   }
 
-  void Move(float direction)
+  void SetWalkDirection(float direction)
   {
-    moveDirection = Mathf.Sign(direction);
+    walkDirection = Mathf.Sign(direction);
 
-    if (moveDirection == opponentDirection)
+    if (walkDirection == opponentDirection)
+    {
       transform.rotation = Quaternion.Euler(0, 0, 20 * -opponentDirection);
-    else moveDirection = retreatModifier * moveDirection;
+
+      // If both are in guard and stopped, starts a duel
+      if (!IsDueling) orchestrator.MaybeStartDuel();
+
+      else if (duelState == DuelState.Standing) Dash();
+    }
+    else walkDirection = retreatModifier * walkDirection;
   }
 
-  private void Halt()
+  private void StopWalk()
   {
-    moveDirection = 0;
-    transform.rotation = Quaternion.identity;
+    walkDirection = 0;
+
+    if (!IsDueling) transform.rotation = Quaternion.identity;
   }
 
-  public void InputMove(InputAction.CallbackContext value)
+  public void InputWalk(InputAction.CallbackContext value)
   {
     // Move on x axis
-    if (value.phase == InputActionPhase.Performed) Move(value.ReadValue<Vector2>().x);
+    if (value.phase == InputActionPhase.Performed) SetWalkDirection(value.ReadValue<Vector2>().x);
 
     // Stop movement when released
-    else if (value.phase != InputActionPhase.Started) Halt();
+    else if (value.phase != InputActionPhase.Started) StopWalk();
   }
   #endregion
 }

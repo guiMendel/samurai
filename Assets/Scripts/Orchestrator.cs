@@ -19,8 +19,25 @@ public class Orchestrator : MonoBehaviour
     AssignSamuraisControlSchemes();
   }
 
+  // ====================================
+  #region DUEL
 
-  // === SAMURAI
+  public void MaybeStartDuel()
+  {
+    if (!LeftSamurai.ReadyToDuel || !RightSamurai.ReadyToDuel) return;
+
+    // At least one needs to be in dash stance
+    if (LeftSamurai.walkDirection <= 0 && RightSamurai.walkDirection >= 0) return;
+
+    LeftSamurai.StartDuel();
+    RightSamurai.StartDuel();
+  }
+
+  #endregion
+
+
+  // ====================================
+  #region SAMURAI
   [Header("Samurai")]
 
   [Tooltip("Minimum distance between the 2 samurai")]
@@ -42,4 +59,6 @@ public class Orchestrator : MonoBehaviour
     LeftSamurai.GetComponent<PlayerInput>().SwitchCurrentControlScheme("WASD", Keyboard.current);
     RightSamurai.GetComponent<PlayerInput>().SwitchCurrentControlScheme("Arrows", Keyboard.current);
   }
+
+  #endregion
 }
