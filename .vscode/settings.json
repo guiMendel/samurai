@@ -55,5 +55,6 @@
     },
     "workbench.colorTheme": "eppz!",
     "editor.tabSize": 2,
-    "editor.detectIndentation": false
+    "editor.detectIndentation": false,
+    "git.postCommitCommand": "push"
 }
