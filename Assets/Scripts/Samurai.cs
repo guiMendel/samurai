@@ -121,6 +121,9 @@ public class Samurai : MonoBehaviour
   [Tooltip("Speed of walking")]
   public float walkSpeed = 3f;
 
+  [Tooltip("Speed modifier of backing away")]
+  [Range(0.1f, 1f)] public float retreatModifier = 0.8f;
+
   // Direction the samurai is currently moving towards
   float moveDirection = 0f;
 
@@ -143,9 +146,20 @@ public class Samurai : MonoBehaviour
     transform.position = new Vector2(opponent.transform.position.x - newDistance, transform.position.y);
   }
 
-  void Move(float direction) => moveDirection = Mathf.Sign(direction);
+  void Move(float direction)
+  {
+    moveDirection = Mathf.Sign(direction);
 
-  private void Halt() => moveDirection = 0;
+    if (moveDirection == opponentDirection)
+      transform.rotation = Quaternion.Euler(0, 0, 20 * -opponentDirection);
+    else moveDirection = retreatModifier * moveDirection;
+  }
+
+  private void Halt()
+  {
+    moveDirection = 0;
+    transform.rotation = Quaternion.identity;
+  }
 
   public void InputMove(InputAction.CallbackContext value)
   {

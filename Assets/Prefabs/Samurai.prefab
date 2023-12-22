@@ -101,6 +101,7 @@ MonoBehaviour:
   guardStanceWindup: 0.3
   guardStanceUnwind: 0.2
   walkSpeed: 3
+  retreatModifier: 0.677
 --- !u!114 &2710849161542954368
 MonoBehaviour:
   m_ObjectHideFlags: 0
