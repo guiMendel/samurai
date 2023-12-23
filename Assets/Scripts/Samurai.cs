@@ -34,6 +34,63 @@ public class Samurai : MonoBehaviour
     UpdateTransitionTimer();
   }
 
+  public void InputGuard(InputAction.CallbackContext value)
+  {
+    if (IsDueling)
+    {
+      Slash(value.phase);
+      return;
+    }
+
+    ToggleGuard(value.phase);
+  }
+
+
+  // ====================================
+  #region ATTACK
+  [Header("Attack")]
+
+  [Tooltip("Range of the sword")]
+  public float swordRange = 2.5f;
+
+  [Tooltip("From the hilt to the tip, which point of the sword yields 100% accuracy")]
+  [Range(0f, 1f)] public float swordSweetSpot = 0.9f;
+
+  // Whether the samurai is still able to attack in this round
+  bool canAttack = true;
+
+  void Slash(InputActionPhase inputPhase)
+  {
+    if (!IsDueling || !canAttack || inputPhase != InputActionPhase.Canceled) return;
+
+    GetComponent<SpriteRenderer>().color = Color.gray;
+
+    canAttack = false;
+
+    float distance = Mathf.Abs(OpponentDistance);
+
+    // Declare a miss (if slashed too early OR too late)
+    if (distance > swordRange || Mathf.Sign(OpponentDistance) != opponentDirection)
+    {
+      orchestrator.DeclareSlashAccuracy(this, -1f);
+      return;
+    }
+
+    // Declare how far from the sweetspot the hit was
+    orchestrator.DeclareSlashAccuracy(this, Mathf.Abs(swordRange * swordSweetSpot - distance));
+  }
+
+  // When the samurai has crossed the other samurai, but did not slash
+  void YieldAttack()
+  {
+    canAttack = false;
+    orchestrator.DeclareSlashAccuracy(this, -3f);
+
+    GetComponent<SpriteRenderer>().color = Color.gray;
+  }
+
+  #endregion
+
 
   // ====================================
   #region DUEL
@@ -71,19 +128,29 @@ public class Samurai : MonoBehaviour
 
   void ApplyDash()
   {
-    if (!IsDashing) return;
+    if (!IsDueling || duelState == DuelState.Over) return;
 
-    transform.position = new Vector2(
-      transform.position.x + opponentDirection * dashSpeed * Time.deltaTime,
-      transform.position.y
-    );
+    // Move only if dashing
+    if (IsDashing)
+    {
+      transform.position = new Vector2(
+        transform.position.x + opponentDirection * dashSpeed * Time.deltaTime,
+        transform.position.y
+      );
+    }
 
-    // Stop dash after the dash limit
+    // If this samurai has crossed the other samurai
     if (
       (opponentDirection > 0 && OpponentDistance < -dashEndDistance) ||
       (opponentDirection < 0 && OpponentDistance > dashEndDistance)
     )
+    {
+      // Go to over duel state
       duelState = DuelState.Over;
+
+      // If samurai hasn't attacked yet, yield attack
+      if (canAttack) YieldAttack();
+    }
   }
 
   #endregion
@@ -138,7 +205,7 @@ public class Samurai : MonoBehaviour
     transitionDuration = -1f;
   }
 
-  public void InputGuard(InputAction.CallbackContext value)
+  void ToggleGuard(InputActionPhase inputPhase)
   {
     float modifier = 1f;
 
@@ -155,7 +222,7 @@ public class Samurai : MonoBehaviour
     }
 
     // Enter guard on press
-    if (value.performed && currentStance != Stance.TransitionIn)
+    if (inputPhase == InputActionPhase.Performed && currentStance != Stance.TransitionIn)
     {
       Interrupt(guardStanceUnwind);
 
@@ -164,13 +231,14 @@ public class Samurai : MonoBehaviour
     }
 
     // Leave guard stance on release
-    if (value.canceled && currentStance != Stance.TransitionOut)
+    if (inputPhase == InputActionPhase.Canceled && currentStance != Stance.TransitionOut)
     {
       Interrupt(guardStanceWindup);
 
       stanceTransitionCoroutine = StartCoroutine(SetGuardStance(false, modifier));
     }
   }
+
 
   #endregion
 

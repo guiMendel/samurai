@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class Orchestrator : MonoBehaviour
 {
@@ -21,6 +22,32 @@ public class Orchestrator : MonoBehaviour
 
   // ====================================
   #region DUEL
+
+  // Accuracies of the samurai's hits.
+  // -2 is no slash yet, -1 is a miss, >=0 is how far from sweetspot was the hit
+  // -3 means the samurai did not attack in the duel
+  float leftSamuraiAccuracy = -2f;
+  float rightSamuraiAccuracy = -2f;
+
+  // Allows a samurai to declare how accurate his slash was
+  public void DeclareSlashAccuracy(Samurai samurai, float accuracy)
+  {
+    if (Object.ReferenceEquals(samurai, LeftSamurai)) leftSamuraiAccuracy = accuracy;
+    else rightSamuraiAccuracy = accuracy;
+
+    // If both have slashed, then calculate aftermath
+    if (leftSamuraiAccuracy != -2f && rightSamuraiAccuracy != -2f) StartCoroutine(CalculateAftermath());
+  }
+
+  IEnumerator CalculateAftermath()
+  {
+    print("Left accuracy:" + leftSamuraiAccuracy);
+    print("Right accuracy:" + rightSamuraiAccuracy);
+
+    yield return new WaitForSeconds(4);
+
+    SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+  }
 
   public void MaybeStartDuel()
   {
