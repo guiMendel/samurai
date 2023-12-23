@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEditor.EditorTools;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
 public class Samurai : MonoBehaviour
@@ -11,10 +12,12 @@ public class Samurai : MonoBehaviour
 
   Orchestrator orchestrator;
   Samurai opponent;
+  SamuraiAnimator animator;
 
 
   private void Awake()
   {
+    animator = GetComponent<SamuraiAnimator>();
     orchestrator = FindObjectOfType<Orchestrator>();
     var samurais = FindObjectsOfType<Samurai>();
 
@@ -191,13 +194,17 @@ public class Samurai : MonoBehaviour
 
     currentStance = enterGuardStance ? Stance.TransitionIn : Stance.TransitionOut;
 
-    GetComponent<SpriteRenderer>().color = enterGuardStance ? Color.blue : Color.gray;
+    if (enterGuardStance)
+    {
+      if (walkDirection == opponentDirection) animator.ReadyLeaning();
+      else animator.ReadyStanding();
+    }
+    else if (walkDirection == 0f) animator.Idle();
+    else animator.Walk();
 
     if (modifier > 0f)
       yield return new WaitForSeconds(
         (enterGuardStance ? guardStanceWindup : guardStanceUnwind) * modifier);
-
-    GetComponent<SpriteRenderer>().color = enterGuardStance ? Color.red : Color.white;
 
     currentStance = enterGuardStance ? Stance.Guard : Stance.Idle;
     orchestrator.MaybeStartDuel();
@@ -281,21 +288,23 @@ public class Samurai : MonoBehaviour
 
     if (walkDirection == opponentDirection)
     {
-      transform.rotation = Quaternion.Euler(0, 0, 20 * -opponentDirection);
-
       // If both are in guard and stopped, starts a duel
       if (!IsDueling) orchestrator.MaybeStartDuel();
 
       else if (duelState == DuelState.Standing) Dash();
     }
     else walkDirection = retreatModifier * walkDirection;
+
+    if (ReadyToDuel) animator.ReadyLeaning();
+    else animator.Walk();
   }
 
   private void StopWalk()
   {
     walkDirection = 0;
-
-    if (!IsDueling) transform.rotation = Quaternion.identity;
+    
+    if (ReadyToDuel) animator.ReadyStanding();
+    else animator.Idle();
   }
 
   public void InputWalk(InputAction.CallbackContext value)

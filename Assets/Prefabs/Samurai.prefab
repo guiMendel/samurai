@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: -2215552699761828712}
   - component: {fileID: 2710849161542954368}
   - component: {fileID: -2291198839397952357}
+  - component: {fileID: 3627996184669163525}
   m_Layer: 0
   m_Name: Samurai
   m_TagString: Untagged
@@ -99,6 +100,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1e72e63fe999b840b2080dc7cab131d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  OnIdle:
+    m_PersistentCalls:
+      m_Calls: []
+  OnWalk:
+    m_PersistentCalls:
+      m_Calls: []
+  OnSlashMiss:
+    m_PersistentCalls:
+      m_Calls: []
+  OnSlashYield:
+    m_PersistentCalls:
+      m_Calls: []
+  OnSlashHit:
+    m_PersistentCalls:
+      m_Calls: []
   swordRange: 2.5
   swordSweetSpot: 0.9
   dashSpeed: 20
@@ -231,3 +247,15 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &3627996184669163525
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5055265359553974689}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de1332e6565b6a74186c8aec95bc4bb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
