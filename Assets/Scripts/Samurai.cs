@@ -1,18 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
 using UnityEditor.EditorTools;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
+[assembly: InternalsVisibleTo("SamuraiAnimator")]
+
 public class Samurai : MonoBehaviour
 {
     // === EVENTS
 
-    public Event.Float OnMove;
+    public Event.Float OnChangeWalkDirection;
 
-    public Event.Bool OnGuard;
+    public UnityEvent OnChangeStance;
+
+    public UnityEvent OnDash;
 
     // === REFS
 
@@ -119,10 +124,10 @@ public class Samurai : MonoBehaviour
     DuelState duelState = DuelState.None;
 
     // Whether this samurai is engaged in a duel
-    bool IsDueling => duelState != DuelState.None;
+    public bool IsDueling => duelState != DuelState.None;
 
     // Whether the samurai is dashing towards the opponent
-    bool IsDashing => duelState == DuelState.Dashing;
+    public bool IsDashing => duelState == DuelState.Dashing;
 
     public void StartDuel()
     {
@@ -138,6 +143,8 @@ public class Samurai : MonoBehaviour
     void Dash()
     {
         duelState = DuelState.Dashing;
+
+        OnDash.Invoke();
     }
 
     void ApplyDash()
@@ -181,7 +188,7 @@ public class Samurai : MonoBehaviour
     [Tooltip("Seconds it takes the samurai to enter guard stance")]
     public float guardStanceUnwind = 0.2f;
 
-    enum Stance
+    public enum Stance
     {
         Idle,
         TransitionIn,
@@ -190,10 +197,19 @@ public class Samurai : MonoBehaviour
     }
 
     // Current stance of the samurai
-    Stance currentStance = Stance.Idle;
+    Stance _currentStance = Stance.Idle;
+    public Stance CurrentStance
+    {
+        get { return _currentStance; }
+        private set
+        {
+            _currentStance = value;
+            OnChangeStance.Invoke();
+        }
+    }
 
     // Whether samurai is ready to start the duel
-    public bool ReadyToDuel => currentStance == Stance.Guard;
+    public bool ReadyToDuel => CurrentStance == Stance.Guard;
 
     // Current coroutine for stance transition
     Coroutine stanceTransitionCoroutine;
@@ -211,16 +227,20 @@ public class Samurai : MonoBehaviour
     {
         transitionDuration = 0f;
 
-        currentStance = enterGuardStance ? Stance.TransitionIn : Stance.TransitionOut;
+        CurrentStance = enterGuardStance ? Stance.TransitionIn : Stance.TransitionOut;
 
-        OnGuard.Invoke(enterGuardStance);
+        if (enterGuardStance)
+            OnChangeStance.Invoke();
 
         if (modifier > 0f)
             yield return new WaitForSeconds(
                 (enterGuardStance ? guardStanceWindup : guardStanceUnwind) * modifier
             );
 
-        currentStance = enterGuardStance ? Stance.Guard : Stance.Idle;
+        if (!enterGuardStance)
+            OnChangeStance.Invoke();
+
+        CurrentStance = enterGuardStance ? Stance.Guard : Stance.Idle;
         orchestrator.MaybeStartDuel();
 
         transitionDuration = -1f;
@@ -243,7 +263,7 @@ public class Samurai : MonoBehaviour
         }
 
         // Enter guard on press
-        if (inputPhase == InputActionPhase.Performed && currentStance != Stance.TransitionIn)
+        if (inputPhase == InputActionPhase.Performed && CurrentStance != Stance.TransitionIn)
         {
             Interrupt(guardStanceUnwind);
 
@@ -252,7 +272,7 @@ public class Samurai : MonoBehaviour
         }
 
         // Leave guard stance on release
-        if (inputPhase == InputActionPhase.Canceled && currentStance != Stance.TransitionOut)
+        if (inputPhase == InputActionPhase.Canceled && CurrentStance != Stance.TransitionOut)
         {
             Interrupt(guardStanceWindup);
 
@@ -274,7 +294,16 @@ public class Samurai : MonoBehaviour
     public float retreatModifier = 0.8f;
 
     // Direction the samurai is currently moving towards
-    public float WalkDirection { get; private set; } = 0f;
+    float _walkDirection = 0f;
+    public float WalkDirection
+    {
+        get { return _walkDirection; }
+        private set
+        {
+            _walkDirection = value;
+            OnChangeWalkDirection.Invoke(value);
+        }
+    }
 
     // Direction towards the opponent
     public float OpponentDirection { get; private set; }
@@ -284,7 +313,7 @@ public class Samurai : MonoBehaviour
 
     void ApplyWalk()
     {
-        if (IsDueling || WalkDirection == 0 || currentStance != Stance.Idle)
+        if (IsDueling || WalkDirection == 0 || CurrentStance != Stance.Idle)
             return;
 
         float newDistance = OpponentDistance - WalkDirection * walkSpeed * Time.deltaTime;
@@ -316,15 +345,11 @@ public class Samurai : MonoBehaviour
         }
         else
             WalkDirection = retreatModifier * WalkDirection;
-
-        OnMove.Invoke(WalkDirection);
     }
 
     private void StopWalk()
     {
         WalkDirection = 0;
-
-        OnMove.Invoke(0);
     }
 
     public void InputWalk(InputAction.CallbackContext value)

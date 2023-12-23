@@ -44,7 +44,7 @@ public class Orchestrator : MonoBehaviour
     print("Left accuracy:" + leftSamuraiAccuracy);
     print("Right accuracy:" + rightSamuraiAccuracy);
 
-    yield return new WaitForSeconds(4);
+    yield return new WaitForSeconds(1.5f);
 
     SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
   }

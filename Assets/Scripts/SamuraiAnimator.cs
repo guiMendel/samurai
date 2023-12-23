@@ -16,12 +16,16 @@ public class SamuraiAnimator : MonoBehaviour
 
         Helper.AssertNotNull(animator, samurai);
 
-        samurai.OnMove.AddListener(OnMove);
-        samurai.OnGuard.AddListener(OnGuard);
+        samurai.OnChangeWalkDirection.AddListener(OnChangeWalkDirection);
+        samurai.OnChangeStance.AddListener(OnChangeStance);
+        samurai.OnDash.AddListener(OnDash);
     }
 
-    private void OnMove(float direction)
+    private void OnChangeWalkDirection(float direction)
     {
+        if (samurai.IsDueling)
+            return;
+
         if (samurai.ReadyToDuel)
         {
             if (direction == samurai.OpponentDirection)
@@ -38,9 +42,12 @@ public class SamuraiAnimator : MonoBehaviour
             animator.Play("Walk");
     }
 
-    private void OnGuard(bool enterGuardStance)
+    private void OnChangeStance()
     {
-        if (enterGuardStance)
+        if (samurai.IsDueling)
+            return;
+
+        if (samurai.CurrentStance != Samurai.Stance.Idle)
         {
             if (samurai.WalkDirection == samurai.OpponentDirection)
                 animator.Play("ReadyLeaning");
@@ -51,5 +58,10 @@ public class SamuraiAnimator : MonoBehaviour
             animator.Play("Idle");
         else
             animator.Play("Walk");
+    }
+
+    private void OnDash()
+    {
+        animator.Play("Dash");
     }
 }
