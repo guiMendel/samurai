@@ -1,27 +1,55 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class SamuraiAnimator : MonoBehaviour
 {
-  Animator animator;
+    // === REFS
+    Animator animator;
+    Samurai samurai;
 
-  private void Awake()
-  {
-    animator = GetComponent<Animator>();
-  }
+    private void Awake()
+    {
+        samurai = GetComponent<Samurai>();
+        animator = GetComponent<Animator>();
 
-  public void Walk() => animator.Play("Walk");
+        Helper.AssertNotNull(animator, samurai);
 
-  public void Idle() => animator.Play("Idle");
+        samurai.OnMove.AddListener(OnMove);
+        samurai.OnGuard.AddListener(OnGuard);
+    }
 
-  public void Dash() => animator.Play("Dash");
+    private void OnMove(float direction)
+    {
+        if (samurai.ReadyToDuel)
+        {
+            if (direction == samurai.OpponentDirection)
+                animator.Play("ReadyLeaning");
+            else
+                animator.Play("ReadyStanding");
 
-  public void ReadyStanding() => animator.Play("ReadyStanding");
+            return;
+        }
 
-  public void ReadyLeaning() => animator.Play("ReadyLeaning");
+        if (direction == 0f)
+            animator.Play("Idle");
+        else
+            animator.Play("Walk");
+    }
 
-  public void Slash() => animator.Play("Slash");
-
-  public void Dead() => animator.Play("Dead");
+    private void OnGuard(bool enterGuardStance)
+    {
+        if (enterGuardStance)
+        {
+            if (samurai.WalkDirection == samurai.OpponentDirection)
+                animator.Play("ReadyLeaning");
+            else
+                animator.Play("ReadyStanding");
+        }
+        else if (samurai.WalkDirection == 0f)
+            animator.Play("Idle");
+        else
+            animator.Play("Walk");
+    }
 }

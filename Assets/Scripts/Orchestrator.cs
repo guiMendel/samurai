@@ -54,7 +54,7 @@ public class Orchestrator : MonoBehaviour
     if (!LeftSamurai.ReadyToDuel || !RightSamurai.ReadyToDuel) return;
 
     // At least one needs to be in dash stance
-    if (LeftSamurai.walkDirection <= 0 && RightSamurai.walkDirection >= 0) return;
+    if (LeftSamurai.WalkDirection <= 0 && RightSamurai.WalkDirection >= 0) return;
 
     LeftSamurai.StartDuel();
     RightSamurai.StartDuel();

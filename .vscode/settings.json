@@ -54,7 +54,8 @@
         "*.csproj": true
     },
     "workbench.colorTheme": "eppz!",
-    "editor.tabSize": 2,
+    "editor.tabSize": 4,
     "editor.detectIndentation": false,
-    "git.postCommitCommand": "push"
+    "git.postCommitCommand": "push",
+    "dotnet.server.useOmnisharp": true,
 }

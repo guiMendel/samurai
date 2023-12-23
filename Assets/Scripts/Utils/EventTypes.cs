@@ -9,6 +9,8 @@ namespace Event
   [Serializable] public class Float : UnityEvent<float> { }
   [Serializable] public class DoubleFloat : UnityEvent<float, float> { }
 
+  [Serializable] public class Bool : UnityEvent<bool> { }
+
   [Serializable] public class DoubleVector2 : UnityEvent<Vector2, Vector2> { }
 
   [Serializable] public class ETransform : UnityEvent<Transform> { }
