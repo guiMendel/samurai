@@ -19,7 +19,16 @@ public class SamuraiAnimator : MonoBehaviour
         samurai.OnChangeWalkDirection.AddListener(OnChangeWalkDirection);
         samurai.OnChangeStance.AddListener(OnChangeStance);
         samurai.OnDash.AddListener(OnDash);
+        samurai.OnSlash.AddListener(OnSlash);
+        samurai.OnDie.AddListener(OnDie);
+        samurai.OnWin.AddListener(OnWin);
     }
+
+  private void OnWin() => animator.Play("ReadyLeaning");
+
+  private void OnDie() => animator.Play("Dead");
+
+    private void OnSlash() => animator.Play("Slash");
 
     private void OnChangeWalkDirection(float direction)
     {
@@ -60,8 +69,5 @@ public class SamuraiAnimator : MonoBehaviour
             animator.Play("Walk");
     }
 
-    private void OnDash()
-    {
-        animator.Play("Dash");
-    }
+    private void OnDash() => animator.Play("Dash");
 }

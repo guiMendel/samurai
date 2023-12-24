@@ -44,5 +44,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 427c8799a989554438108b1444663f13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  outcomeDelay: 1
   minSamuraisDistance: 2
   maxSamuraisDistance: 11

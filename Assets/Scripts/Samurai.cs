@@ -19,6 +19,12 @@ public class Samurai : MonoBehaviour
 
     public UnityEvent OnDash;
 
+    public UnityEvent OnSlash;
+
+    public UnityEvent OnDie;
+
+    public UnityEvent OnWin;
+
     // === REFS
 
     Orchestrator orchestrator;
@@ -69,12 +75,15 @@ public class Samurai : MonoBehaviour
     // Whether the samurai is still able to attack in this round
     bool canAttack = true;
 
+    // Whether samurai is dead
+    public bool IsDead { get; private set; } = false;
+
     void Slash(InputActionPhase inputPhase)
     {
         if (!IsDueling || !canAttack || inputPhase != InputActionPhase.Canceled)
             return;
 
-        GetComponent<SpriteRenderer>().color = Color.gray;
+        OnSlash.Invoke();
 
         canAttack = false;
 
@@ -83,22 +92,32 @@ public class Samurai : MonoBehaviour
         // Declare a miss (if slashed too early OR too late)
         if (distance > swordRange || Mathf.Sign(OpponentDistance) != OpponentDirection)
         {
-            orchestrator.DeclareSlashAccuracy(this, -1f);
+            orchestrator.DeclareSlashAccuracy(this, Orchestrator.DuelPerformance.Missed);
             return;
         }
 
         // Declare how far from the sweetspot the hit was
-        orchestrator.DeclareSlashAccuracy(this, Mathf.Abs(swordRange * swordSweetSpot - distance));
+        orchestrator.DeclareSlashAccuracy(
+            this,
+            Orchestrator.DuelPerformance.Hit,
+            Mathf.Abs(swordRange * swordSweetSpot - distance)
+        );
     }
 
     // When the samurai has crossed the other samurai, but did not slash
     void YieldAttack()
     {
         canAttack = false;
-        orchestrator.DeclareSlashAccuracy(this, -3f);
-
-        GetComponent<SpriteRenderer>().color = Color.gray;
+        orchestrator.DeclareSlashAccuracy(this, Orchestrator.DuelPerformance.Yielded);
     }
+
+    public void Die()
+    {
+        OnDie.Invoke();
+        IsDead = true;
+    }
+
+    public void Win() => OnWin.Invoke();
 
     #endregion
 
