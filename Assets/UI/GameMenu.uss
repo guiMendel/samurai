@@ -1,0 +1,5 @@
+.rematch-prompt {
+    color: rgba(253, 253, 253, 255);
+    -unity-text-outline-width: 0.2px;
+    -unity-text-outline-color: rgba(253, 253, 253, 255);
+}

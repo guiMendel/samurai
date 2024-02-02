@@ -1,0 +1,9 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/Global.uss?fileID=7433441132597879392&amp;guid=afe18edc1eaeb384c9fd23ba8badfdab&amp;type=3#Global" />
+    <Style src="project://database/Assets/UI/GameMenu.uss?fileID=7433441132597879392&amp;guid=6b17b55dd0954ec4da15a13cf1cf8cc6&amp;type=3#GameMenu" />
+    <ui:VisualElement name="Container" style="position: absolute; bottom: 0; right: 0; left: 0; flex-direction: row; justify-content: space-around; padding-bottom: 20px; align-items: center;">
+        <ui:Label text="Attack for rematch" display-tooltip-when-elided="true" name="LeftRematch" class="rematch-prompt" />
+        <ui:Button text="Quit" display-tooltip-when-elided="true" name="Quit" class="button" />
+        <ui:Label text="Attack for rematch" display-tooltip-when-elided="true" name="RightRematch" class="rematch-prompt" />
+    </ui:VisualElement>
+</ui:UXML>

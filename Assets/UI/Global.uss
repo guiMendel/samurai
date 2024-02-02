@@ -16,7 +16,8 @@
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
     -unity-text-outline-width: 0.2px;
-    -unity-text-outline-color: rgba(255, 255, 255, 255);
-    background-color: rgba(79, 78, 48, 255);
-    color: rgba(226, 189, 110, 255);
+    -unity-text-outline-color: rgb(255, 255, 255);
+    background-color: rgb(79, 78, 48);
+    color: rgb(226, 189, 110);
+    min-width: 90px;
 }

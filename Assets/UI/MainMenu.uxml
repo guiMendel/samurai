@@ -1,6 +1,6 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
     <Style src="project://database/Assets/UI/Global.uss?fileID=7433441132597879392&amp;guid=afe18edc1eaeb384c9fd23ba8badfdab&amp;type=3#Global" />
-    <ui:VisualElement name="container" style="flex-grow: 1; justify-content: center; padding-left: 25%; padding-right: 25%; padding-top: 0; padding-bottom: 0;">
+    <ui:VisualElement name="Container" style="flex-grow: 1; justify-content: center; padding-left: 25%; padding-right: 25%; padding-top: 0; padding-bottom: 0;">
         <ui:Button text="Start" display-tooltip-when-elided="true" name="Start" class="button" />
         <ui:Button text="Quit" display-tooltip-when-elided="true" name="Quit" class="button" style="margin-top: 40px;" />
     </ui:VisualElement>
