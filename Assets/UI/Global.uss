@@ -1,0 +1,22 @@
+.button {
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-left-width: 0;
+    border-right-width: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    -unity-text-outline-width: 0.2px;
+    -unity-text-outline-color: rgba(255, 255, 255, 255);
+    background-color: rgba(79, 78, 48, 255);
+    color: rgba(226, 189, 110, 255);
+}
