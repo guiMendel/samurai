@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
@@ -9,6 +10,7 @@ public class GameMenu : MonoBehaviour
 {
     public Object mainMenuScene;
 
+    bool gameIsOver = false;
     bool leftReady = false;
     bool rightReady = false;
 
@@ -16,9 +18,11 @@ public class GameMenu : MonoBehaviour
     Label rightLabel;
     VisualElement container;
 
-    public void Show()
+    public void SetGameOver()
     {
         container.style.display = DisplayStyle.Flex;
+
+        gameIsOver = true;
     }
 
     private void OnEnable()
@@ -28,6 +32,9 @@ public class GameMenu : MonoBehaviour
         container = root.Q<VisualElement>("Container");
         leftLabel = root.Q<Label>("LeftRematch");
         rightLabel = root.Q<Label>("RightRematch");
+
+        var quitButton = root.Q<Button>("Quit");
+        quitButton.clicked += QuitToMainMenu;
 
         container.style.display = DisplayStyle.None;
     }
@@ -54,6 +61,26 @@ public class GameMenu : MonoBehaviour
 
         if (leftReady && rightReady)
             TriggerRematch();
+    }
+
+    public void ToggleLeftReady(InputAction.CallbackContext value)
+    {
+        print("toggling left");
+
+        if (!gameIsOver || !value.performed)
+            return;
+
+        ToggleReady(isLeft: true);
+    }
+
+    public void ToggleRightReady(InputAction.CallbackContext value)
+    {
+        print("toggling right");
+
+        if (!gameIsOver || !value.performed)
+            return;
+
+        ToggleReady(isLeft: false);
     }
 
     private void TriggerRematch()

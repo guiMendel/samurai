@@ -65,7 +65,7 @@ public class Orchestrator : MonoBehaviour
 
         yield return new WaitForSeconds(1f);
 
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        FindObjectOfType<GameMenu>().SetGameOver();
     }
 
     private void ShowOutcome()

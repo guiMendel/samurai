@@ -407,6 +407,34 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2710849161542954368, guid: 34f8759a9b679b94999cb8e722b8cc43, type: 3}
+      propertyPath: m_ActionEvents.Array.data[1].m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2710849161542954368, guid: 34f8759a9b679b94999cb8e722b8cc43, type: 3}
+      propertyPath: m_ActionEvents.Array.data[1].m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2710849161542954368, guid: 34f8759a9b679b94999cb8e722b8cc43, type: 3}
+      propertyPath: m_ActionEvents.Array.data[1].m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 1652926108}
+    - target: {fileID: 2710849161542954368, guid: 34f8759a9b679b94999cb8e722b8cc43, type: 3}
+      propertyPath: m_ActionEvents.Array.data[1].m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2710849161542954368, guid: 34f8759a9b679b94999cb8e722b8cc43, type: 3}
+      propertyPath: m_ActionEvents.Array.data[1].m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: ToggleRightReady
+      objectReference: {fileID: 0}
+    - target: {fileID: 2710849161542954368, guid: 34f8759a9b679b94999cb8e722b8cc43, type: 3}
+      propertyPath: m_ActionEvents.Array.data[1].m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: GameMenu, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 2710849161542954368, guid: 34f8759a9b679b94999cb8e722b8cc43, type: 3}
+      propertyPath: m_ActionEvents.Array.data[1].m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 5055265359553974689, guid: 34f8759a9b679b94999cb8e722b8cc43, type: 3}
       propertyPath: m_Name
       value: Samurai Right
@@ -427,6 +455,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1652926107}
   - component: {fileID: 1652926106}
+  - component: {fileID: 1652926108}
   m_Layer: 5
   m_Name: GameMenu
   m_TagString: Untagged
@@ -465,6 +494,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1652926108
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1652926105}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53b67754addab8845b3ed6094a3ce593, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainMenuScene: {fileID: 102900000, guid: 7d57f7df12a9427499bed8dda701ad36, type: 3}
 --- !u!1001 &4038371150029911940
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -515,6 +557,34 @@ PrefabInstance:
     - target: {fileID: 2219052047372269912, guid: 34f8759a9b679b94999cb8e722b8cc43, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2710849161542954368, guid: 34f8759a9b679b94999cb8e722b8cc43, type: 3}
+      propertyPath: m_ActionEvents.Array.data[1].m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2710849161542954368, guid: 34f8759a9b679b94999cb8e722b8cc43, type: 3}
+      propertyPath: m_ActionEvents.Array.data[1].m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2710849161542954368, guid: 34f8759a9b679b94999cb8e722b8cc43, type: 3}
+      propertyPath: m_ActionEvents.Array.data[1].m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 1652926108}
+    - target: {fileID: 2710849161542954368, guid: 34f8759a9b679b94999cb8e722b8cc43, type: 3}
+      propertyPath: m_ActionEvents.Array.data[1].m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2710849161542954368, guid: 34f8759a9b679b94999cb8e722b8cc43, type: 3}
+      propertyPath: m_ActionEvents.Array.data[1].m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: ToggleLeftReady
+      objectReference: {fileID: 0}
+    - target: {fileID: 2710849161542954368, guid: 34f8759a9b679b94999cb8e722b8cc43, type: 3}
+      propertyPath: m_ActionEvents.Array.data[1].m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: GameMenu, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 2710849161542954368, guid: 34f8759a9b679b94999cb8e722b8cc43, type: 3}
+      propertyPath: m_ActionEvents.Array.data[1].m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 5055265359553974689, guid: 34f8759a9b679b94999cb8e722b8cc43, type: 3}
       propertyPath: m_Name
