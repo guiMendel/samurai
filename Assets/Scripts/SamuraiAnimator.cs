@@ -24,14 +24,16 @@ public class SamuraiAnimator : MonoBehaviour
         samurai.OnWin.AddListener(OnWin);
     }
 
-  private void OnWin() => animator.Play("ReadyLeaning");
+    private void OnWin() => animator.Play("ReadyLeaning");
 
-  private void OnDie() => animator.Play("Dead");
+    private void OnDie() => animator.Play("Dead");
 
     private void OnSlash() => animator.Play("Slash");
 
     private void OnChangeWalkDirection(float direction)
     {
+        print(("OnChangeWalkDirection", samurai.ReadyToDuel, direction));
+
         if (samurai.IsDueling)
             return;
 
@@ -53,6 +55,8 @@ public class SamuraiAnimator : MonoBehaviour
 
     private void OnChangeStance()
     {
+        print(("OnChangeStance", samurai.CurrentStance, samurai.WalkDirection));
+
         if (samurai.IsDueling)
             return;
 

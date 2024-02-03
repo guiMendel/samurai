@@ -222,6 +222,9 @@ public class Samurai : MonoBehaviour
         get { return _currentStance; }
         private set
         {
+            if (_currentStance == value)
+                return;
+
             _currentStance = value;
             OnChangeStance.Invoke();
         }
@@ -248,16 +251,10 @@ public class Samurai : MonoBehaviour
 
         CurrentStance = enterGuardStance ? Stance.TransitionIn : Stance.TransitionOut;
 
-        if (enterGuardStance)
-            OnChangeStance.Invoke();
-
         if (modifier > 0f)
             yield return new WaitForSeconds(
                 (enterGuardStance ? guardStanceWindup : guardStanceUnwind) * modifier
             );
-
-        if (!enterGuardStance)
-            OnChangeStance.Invoke();
 
         CurrentStance = enterGuardStance ? Stance.Guard : Stance.Idle;
         orchestrator.MaybeStartDuel();

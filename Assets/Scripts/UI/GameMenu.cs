@@ -65,8 +65,6 @@ public class GameMenu : MonoBehaviour
 
     public void ToggleLeftReady(InputAction.CallbackContext value)
     {
-        print("toggling left");
-
         if (!gameIsOver || !value.performed)
             return;
 
@@ -75,8 +73,6 @@ public class GameMenu : MonoBehaviour
 
     public void ToggleRightReady(InputAction.CallbackContext value)
     {
-        print("toggling right");
-
         if (!gameIsOver || !value.performed)
             return;
 
