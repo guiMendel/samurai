@@ -32,8 +32,6 @@ public class SamuraiAnimator : MonoBehaviour
 
     private void OnChangeWalkDirection(float direction)
     {
-        print(("OnChangeWalkDirection", samurai.ReadyToDuel, direction));
-
         if (samurai.IsDueling)
             return;
 
@@ -55,8 +53,6 @@ public class SamuraiAnimator : MonoBehaviour
 
     private void OnChangeStance()
     {
-        print(("OnChangeStance", samurai.CurrentStance, samurai.WalkDirection));
-
         if (samurai.IsDueling)
             return;
 
